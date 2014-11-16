@@ -1,4 +1,10 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: 'Reproducible Research: Peer Assessment 1'
+output:
+  html_document:
+    fig_caption: yes
+    keep_md: yes
+---
 
 
 ## Loading and preprocessing the data
@@ -6,13 +12,6 @@
 
 ```r
 library(knitr)
-```
-
-```
-## Warning: package 'knitr' was built under R version 3.1.2
-```
-
-```r
 data <- read.csv(unz("activity.zip", "activity.csv"), header=T, quote="\"",
                  sep=",")
 data$date = as.Date(data$date, format = "%Y-%m-%d")
@@ -65,7 +64,7 @@ ggplot(completeData, aes(x=date, y=steps)) +
     labs(x = "Day", y = "Steps")
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 Next, let's look at a histogram of the total number of steps per day. In magenta,
 we have the mean steps taken per day. In blue, the median steps taken per day.
@@ -79,7 +78,7 @@ abline(v = meanStepsPerDay, col ="magenta", lwd = 4)
 abline(v = medianStepsPerDay, col = "blue", lwd=2)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
 The mean steps per day is 10,766.19. The median steps per day is
 10,765.
@@ -100,7 +99,7 @@ axis(1, at=seq(1,length(meanStepsByInterval),12),
      labels=unlist(dimnames(meanStepsByInterval))[seq(1,length(meanStepsByInterval),12)] )
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 
 ```r
@@ -153,7 +152,7 @@ abline(v = newMeanStepsPerDay, col ="magenta", lwd = 4)
 abline(v = newMedianStepsPerDay, col = "blue", lwd=2)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
 
 The mean steps per day is 10,749.77. The median
 steps per day is 10,641. They are close to the
@@ -181,7 +180,7 @@ mtext("Number of Steps", side = 2, outer = TRUE)
 mtext("Interval", side=1, outer=TRUE, padj=1)
 ```
 
-![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
 There are a lot more steps taken in the early morning on weekdays than on weekends.
 People walk later in the evenings on weekends. More steps are taken on weekends.

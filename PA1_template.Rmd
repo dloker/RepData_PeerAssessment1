@@ -1,14 +1,15 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: 'Reproducible Research: Peer Assessment 1'
+output:
   html_document:
-    keep_md: true
+    fig_caption: yes
+    keep_md: yes
 ---
 
 
 ## Loading and preprocessing the data
 
-```{r loading,echo=TRUE}
+```{r}
 library(knitr)
 data <- read.csv(unz("activity.zip", "activity.csv"), header=T, quote="\"",
                  sep=",")
@@ -36,7 +37,7 @@ completeData <- data[complete.cases(data),]
 
 First, we take the steps and calculate their sums by date.
 
-```{r steps1,echo=TRUE}
+```{r}
 library(ggplot2)
 
 totalStepsPerDay <- tapply(completeData$steps, completeData$date, 
@@ -45,7 +46,7 @@ totalStepsPerDay <- tapply(completeData$steps, completeData$date,
 
 Now, we calculate the mean and median of those totals.
 
-```{r steps2,echo=TRUE}
+```{r}
 meanStepsPerDay <- mean(totalStepsPerDay)
 medianStepsPerDay <- median(totalStepsPerDay)
 
@@ -53,7 +54,7 @@ medianStepsPerDay <- median(totalStepsPerDay)
 
 First, we'll plot the total number of steps taken, by day, as a simple histogram.
 
-```{r echo=TRUE}
+```{r}
 ggplot(completeData, aes(x=date, y=steps)) + 
     geom_histogram(stat="identity", fill = "blue") +
     labs(title="Histogram of Total Number of Steps by Day") +
@@ -65,7 +66,7 @@ ggplot(completeData, aes(x=date, y=steps)) +
 Next, let's look at a histogram of the total number of steps per day. In magenta,
 we have the mean steps taken per day. In blue, the median steps taken per day.
 
-```{r echo=TRUE}
+```{r}
 
 hist(totalStepsPerDay, col="green", breaks=10, 
      main = "Histogram of Total Number of Steps Per Day",
@@ -82,7 +83,7 @@ The mean steps per day is `r prettyNum(meanStepsPerDay, ",")`. The median steps 
 Calculate the mean steps taken for each interval (averaged across all days).
 Then, plot the average.
 
-```{r echo=TRUE}
+```{r}
 meanStepsByInterval <- tapply(completeData$steps, completeData$time, 
                               mean, na.rm = TRUE)
 plot(meanStepsByInterval, axes = FALSE, t = "l", xlab="Interval", 
@@ -92,7 +93,7 @@ axis(1, at=seq(1,length(meanStepsByInterval),12),
      labels=unlist(dimnames(meanStepsByInterval))[seq(1,length(meanStepsByInterval),12)] )
 ```
 
-```{r echo=TRUE}
+```{r}
 intervalWithMaxSteps <- names(which(meanStepsByInterval == 
                                         max(meanStepsByInterval)))
 ```
@@ -103,14 +104,14 @@ The interval with the maximum average across all days is `r intervalWithMaxSteps
 
 How many missing values are there?
 
-```{r echo=TRUE}
+```{r}
 totalMissingRows <- sum(!complete.cases(data))
 ```
 
 There are `r totalMissingRows` missing values in the original data set. We will
 replace these missing values with the mean (over all days) for that interval.
 
-```{r echo=TRUE}
+```{r}
 newData <- data # new data frame to hold imputed data
 # Get missing indices for steps
 indexForNA <- which(is.na(newData$steps))
@@ -126,7 +127,7 @@ There are now `r newTotalMissingRows` missing values in the imputed data set.
 Now let's take a look at the total steps per day as a histogram, and the new
 mean (magenta) and median (blue).
 
-```{r echo=TRUE}
+```{r}
 
 newTotalStepsPerDay <- tapply(newData$steps, newData$date, 
                            sum)
@@ -147,7 +148,7 @@ mean/median close to the originals.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r echo=TRUE}
+```{r}
 # Calculate mean steps by dayType and interval
 meanStepsByIntervalDayType <- with(newData, tapply(steps, list(dayType, time),
                                                    mean))
