@@ -1,15 +1,18 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r loading,echo=TRUE}
+
+```r
 library(knitr)
+```
+
+```
+## Warning: package 'knitr' was built under R version 3.1.2
+```
+
+```r
 data <- read.csv(unz("activity.zip", "activity.csv"), header=T, quote="\"",
                  sep=",")
 data$date = as.Date(data$date, format = "%Y-%m-%d")
@@ -36,7 +39,8 @@ completeData <- data[complete.cases(data),]
 
 First, we take the steps and calculate their sums by date.
 
-```{r steps1,echo=TRUE}
+
+```r
 library(ggplot2)
 
 totalStepsPerDay <- tapply(completeData$steps, completeData$date, 
@@ -45,28 +49,29 @@ totalStepsPerDay <- tapply(completeData$steps, completeData$date,
 
 Now, we calculate the mean and median of those totals.
 
-```{r steps2,echo=TRUE}
+
+```r
 meanStepsPerDay <- mean(totalStepsPerDay)
 medianStepsPerDay <- median(totalStepsPerDay)
-
 ```
 
 First, we'll plot the total number of steps taken, by day, as a simple histogram.
 
-```{r echo=TRUE}
+
+```r
 ggplot(completeData, aes(x=date, y=steps)) + 
     geom_histogram(stat="identity", fill = "blue") +
     labs(title="Histogram of Total Number of Steps by Day") +
     labs(x = "Day", y = "Steps")
-
-
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
 
 Next, let's look at a histogram of the total number of steps per day. In magenta,
 we have the mean steps taken per day. In blue, the median steps taken per day.
 
-```{r echo=TRUE}
 
+```r
 hist(totalStepsPerDay, col="green", breaks=10, 
      main = "Histogram of Total Number of Steps Per Day",
      xlab = "Total Steps Per Day")
@@ -74,15 +79,18 @@ abline(v = meanStepsPerDay, col ="magenta", lwd = 4)
 abline(v = medianStepsPerDay, col = "blue", lwd=2)
 ```
 
-The mean steps per day is `r prettyNum(meanStepsPerDay, ",")`. The median steps per day is
-`r prettyNum(medianStepsPerDay, ",")`.
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+The mean steps per day is 10,766.19. The median steps per day is
+10,765.
 
 ## What is the average daily activity pattern?
 
 Calculate the mean steps taken for each interval (averaged across all days).
 Then, plot the average.
 
-```{r echo=TRUE}
+
+```r
 meanStepsByInterval <- tapply(completeData$steps, completeData$time, 
                               mean, na.rm = TRUE)
 plot(meanStepsByInterval, axes = FALSE, t = "l", xlab="Interval", 
@@ -92,25 +100,30 @@ axis(1, at=seq(1,length(meanStepsByInterval),12),
      labels=unlist(dimnames(meanStepsByInterval))[seq(1,length(meanStepsByInterval),12)] )
 ```
 
-```{r echo=TRUE}
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+
+```r
 intervalWithMaxSteps <- names(which(meanStepsByInterval == 
                                         max(meanStepsByInterval)))
 ```
 
-The interval with the maximum average across all days is `r intervalWithMaxSteps`.
+The interval with the maximum average across all days is 08:35.
 
 ## Imputing missing values
 
 How many missing values are there?
 
-```{r echo=TRUE}
+
+```r
 totalMissingRows <- sum(!complete.cases(data))
 ```
 
-There are `r totalMissingRows` missing values in the original data set. We will
+There are 2304 missing values in the original data set. We will
 replace these missing values with the mean (over all days) for that interval.
 
-```{r echo=TRUE}
+
+```r
 newData <- data # new data frame to hold imputed data
 # Get missing indices for steps
 indexForNA <- which(is.na(newData$steps))
@@ -122,12 +135,12 @@ for (j in seq_along(indexForNA)) {
 newTotalMissingRows <- sum(!complete.cases(newData))
 ```
 
-There are now `r newTotalMissingRows` missing values in the imputed data set.
+There are now 0 missing values in the imputed data set.
 Now let's take a look at the total steps per day as a histogram, and the new
 mean (magenta) and median (blue).
 
-```{r echo=TRUE}
 
+```r
 newTotalStepsPerDay <- tapply(newData$steps, newData$date, 
                            sum)
 newMeanStepsPerDay <- mean(newTotalStepsPerDay)
@@ -140,14 +153,17 @@ abline(v = newMeanStepsPerDay, col ="magenta", lwd = 4)
 abline(v = newMedianStepsPerDay, col = "blue", lwd=2)
 ```
 
-The mean steps per day is `r prettyNum(newMeanStepsPerDay, ",")`. The median
-steps per day is `r prettyNum(newMedianStepsPerDay, ",")`. They are close to the
+![](./PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
+
+The mean steps per day is 10,749.77. The median
+steps per day is 10,641. They are close to the
 original, but slightly lower. Overally, the imputing of the data kept the
 mean/median close to the originals.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r echo=TRUE}
+
+```r
 # Calculate mean steps by dayType and interval
 meanStepsByIntervalDayType <- with(newData, tapply(steps, list(dayType, time),
                                                    mean))
@@ -164,6 +180,8 @@ axis(1, at=seq(1,length(meanStepsByIntervalDayType[2, ]),12),
 mtext("Number of Steps", side = 2, outer = TRUE)
 mtext("Interval", side=1, outer=TRUE, padj=1)
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 There are a lot more steps taken in the early morning on weekdays than on weekends.
 People walk later in the evenings on weekends. More steps are taken on weekends.
